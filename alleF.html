@@ -152,6 +152,21 @@ ul {
 			width:50% ;
 		}
 		
+		table, th, td {
+  		border: 1px solid black;
+ 		border-collapse: collapse;
+		}
+		
+		th, td {
+ 		padding: 15px;
+  		text-align: left;
+		}
+		
+		#t01 {
+  		width: 100%;    
+  		background-color: #f1f1c1;
+		}
+		
 	</style>
 
 </head>
@@ -183,10 +198,6 @@ ul {
 
 	<a role="button" class="btn btn-info" id="toll" href="https://www.watson.ch/">Klick!</a>
 	
-	
-
-<!-- Regeln in ID haben höhere Priorität-->
-	<!-- padding sagt rand zum Feld der Textes, Border ist einfach Rahmen, und Margin sagt Abstand zur Seite -->
 
 <h1 class='rotgruen' id="rahmen"> Willkommen</h1>
 
@@ -197,30 +208,28 @@ ul {
 Sali Du! Gsesch das? Oder Lisisch, oder Körsch...
 </p> 
 
-<img id="rechts2" src="Bild.png" height="187" length="235.8">
 
-
-	<h4> text </h4>
-<p>
-Informations in differen languages:
-</p>
-
+<table id="t01">
+  <tr>
+    <th>Firstname</th>
+    <th>Lastname</th>
+    <th>Age</th>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td>
+    <td>94</td>
+  </tr>
+</table>
 
 
 <br /> 
 
 
 
-<!-- Die Grössen ohne Angabe entsprechen Pixeln-->
-
-<a href= "https://de.wikipedia.org/wiki/Regenw%C3%BCrmer"><img src="RW.png" height="284"; width="710"/> </a>
-
-<a href= "http://www.rechnr.de/farbenrechner">Link zum farbenrechner</a>
-
-<!-- ein Link kann 4 Zustände haben-->
 
 
-<!-- Tabelle -->
+
 
 <!--Prinzip der Vererbung im Sytle Teil (zuerst table dann tr dann td)-->
 
