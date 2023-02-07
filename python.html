@@ -1,11 +1,12 @@
 <html>
+    <link rel=”stylesheet”   href=”https://pyscript.net/alpha/pyscript.css” /><script defer src=”https://pyscript.net/alpha/pyscript.js”></script>
     <head>
         <title>Running a Python script</title>
         <?PHP
         echo shell_exec("python script.py");
         ?>
         </head>
-    <body>
-        <!-- BODY -->
-    </body>
+    <body>  Hello world! <br>  This is the current date and time, as computed by Python:  <py-script>   
+        from datetime import datetime    now = datetime.now()    now.strftime(“%m/%d/%Y, %H:%M:%S”)  
+        </py-script></body>
 </html>
