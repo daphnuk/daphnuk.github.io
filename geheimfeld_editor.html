@@ -73,13 +73,13 @@ button{background:#263653;border:1px solid #435777;color:var(--text);padding:9px
 const NS='http://www.w3.org/2000/svg', board=document.getElementById('board');
 const W=10,H=8, rows='ABCDEFGH'; let pieces=[], selected=null, activeShape='triangle', dragging=null;
 const templates={
- triangle:[[-1,-.5],[1,-.5],[0,1]],
+ triangle:[[-2,-.5],[2,-.5],[0,2]],
  square:[[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]],
  diamond:[[0,-1],[1,0],[0,1],[-1,0]],
  hexagon:[[0,-1],[.85,-.5],[.85,.5],[0,1],[-.85,.5],[-.85,-.5]],
  bar:[[-1,-.45],[1,-.45],[.65,.45],[-1.35,.45]],
  bigtri:[[-1.5,-1],[1.5,-1],[0,1.5]],
- transparent:[[-.8,-.8],[.8,-.8],[.8,.8],[-.8,.8]],
+ transparent:[[-1,-1],[1,-1],[1,1],[-1,1]],
  custom:[[-1,-.7],[0,-.7],[0,0],[1,0],[1,.7],[-.5,.7],[-.5,0],[-1,0]]
 };
 const names={triangle:'Dreieck',square:'Quadrat',diamond:'Raute',hexagon:'Sechseck',bar:'Parallelogramm',bigtri:'Grosses Dreieck',transparent:'Transparenter Umlenker',custom:'Zickzack'};
