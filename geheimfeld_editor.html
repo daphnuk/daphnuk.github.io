@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Geheimfeld – Rätsel-Editor</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#141c2e;--panel2:#1b2740;--line:#34435e;--muted:#9aa9c2;--text:#eef3ff;--accent:#a78bfa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#263454 0,#0b1020 55%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:24px 22px 12px;max-width:1250px;margin:auto}h1{margin:0;font-size:clamp(25px,4vw,36px);letter-spacing:.12em}header p{margin:6px 0;color:var(--muted)}
+main{max-width:1250px;margin:auto;padding:12px 18px 36px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px}
+.panel{background:linear-gradient(180deg,#172239,#111a2b);border:1px solid #2c3a55;border-radius:18px;padding:16px;box-shadow:0 14px 40px #0005}
+.board-wrap{min-width:0}.board-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.board-head strong{font-size:16px}.hint{font-size:12px;color:var(--muted)}
+svg#board{display:block;width:100%;height:auto;background:#0d1627;border-radius:12px;touch-action:manipulation}
+.gridline{stroke:#34445e;stroke-width:.018}.coord{fill:#b7c4dc;font-size:.22px;font-weight:600;text-anchor:middle;dominant-baseline:middle}
+.piece{cursor:grab;stroke:#f3f6ff;stroke-width:.035;stroke-linejoin:round;filter:drop-shadow(0 0 .035px #fff8)}.piece.selected{stroke:#fff;stroke-width:.07;filter:drop-shadow(0 0 .08px #fff)}
+.side h2{font-size:15px;margin:0 0 12px}.section{padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid #2c3a55}.section:last-child{border:0;margin:0;padding:0}
+label{display:block;color:var(--muted);font-size:12px;margin:9px 0 5px}
+input,select,textarea{width:100%;background:#0d1627;border:1px solid #394967;border-radius:9px;padding:9px;color:var(--text);font:inherit}
+.palette{display:grid;grid-template-columns:1fr 1fr;gap:7px}.shape{background:#202d45;border:1px solid #3a4a67;border-radius:10px;color:var(--text);padding:9px 7px;cursor:pointer;text-align:left;font-size:13px}.shape:hover,.shape.active{border-color:var(--accent);background:#302c50}.shape small{display:block;color:var(--muted);font-size:11px}
+button{background:#263653;border:1px solid #435777;color:var(--text);padding:9px 11px;border-radius:9px;cursor:pointer;font:inherit}button:hover{background:#334969}button.primary{background:#6d55bd;border-color:#9b83ec}button.danger{background:#492b3a;border-color:#75445d}.actions{display:flex;flex-wrap:wrap;gap:7px}.actions button{flex:1}
+#pieceList{display:flex;flex-direction:column;gap:6px;max-height:150px;overflow:auto}.piece-row{display:flex;align-items:center;justify-content:space-between;background:#0d1627;border:1px solid #2c3a55;border-radius:8px;padding:7px 9px;font-size:12px;cursor:pointer}.piece-row.active{border-color:var(--accent)}
+.note{color:var(--muted);font-size:12px;margin:8px 0 0}.status{min-height:20px;color:#c4b5fd;font-size:12px;margin-top:8px}
+@media(max-width:850px){main{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr;gap:14px}.side .section{border:0;padding:0;margin:0}}
+@media(max-width:540px){main{padding:8px}.panel{padding:12px}.side{display:block}.side .section{border-bottom:1px solid #2c3a55;padding-bottom:12px;margin-bottom:12px}.board-head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header><h1>GEHEIMFELD</h1><p>Rätsel-Editor · Lege deine Figuren auf dem Raster ab.</p></header>
+<main>
+<section class="panel board-wrap">
+ <div class="board-head"><strong>Spielfeld · 10 × 8</strong><span class="hint">Figur auswählen, dann ins Feld klicken · Ziehen zum Verschieben</span></div>
+ <svg id="board" viewBox="-0.65 -0.55 11.3 9.15" role="img" aria-label="Spielfeld mit zehn Spalten und acht Reihen"></svg>
+ <div class="status" id="status">Wähle rechts eine Figur aus und klicke auf das Spielfeld.</div>
+</section>
+<aside class="panel side">
+ <div class="section">
+  <h2>1 · Figur hinzufügen</h2>
+  <div class="palette" id="palette">
+   <button class="shape active" data-shape="triangle">▲ Dreieck<small>rot / frei färbbar</small></button>
+   <button class="shape" data-shape="square">■ Quadrat<small>ein Feld</small></button>
+   <button class="shape" data-shape="diamond">◆ Raute<small>gedrehtes Quadrat</small></button>
+   <button class="shape" data-shape="hexagon">⬡ Sechseck<small>Rasterform</small></button>
+   <button class="shape" data-shape="bar">▱ Parallelogramm<small>längliche Form</small></button>
+   <button class="shape" data-shape="bigtri">◢ Grosses Dreieck<small>mehrere Felder</small></button>
+   <button class="shape" data-shape="transparent">◇ Transparent<small>farbloser Umlenker</small></button>
+   <button class="shape" data-shape="custom">⬠ Zickzack<small>komplexe Figur</small></button>
+  </div>
+  <label for="color">Farbe</label><select id="color"><option value="#e66b5b">Rot</option><option value="#5d91d5">Blau</option><option value="#e8c65c">Gelb</option><option value="#f1f3f7">Weiss</option><option value="#69b58e">Grün</option><option value="#a78bfa">Lila</option><option value="#a9dce8">Hellblau</option></select>
+  <button class="primary" id="add" style="width:100%;margin-top:10px">+ Figur hinzufügen</button>
+  <p class="note">Die Figur erscheint zunächst in der Mitte. Danach kannst du sie anklicken und verschieben.</p>
+ </div>
+ <div class="section">
+  <h2>2 · Ausgewählte Figur</h2>
+  <div class="actions"><button id="rot45">↻ 45°</button><button id="rot90">↻ 90°</button></div>
+  <div class="actions" style="margin-top:7px"><button id="flip">↔ Spiegeln</button><button class="danger" id="remove">Entfernen</button></div>
+  <label for="pieceColor">Farbe ändern</label><select id="pieceColor"><option value="#e66b5b">Rot</option><option value="#5d91d5">Blau</option><option value="#e8c65c">Gelb</option><option value="#f1f3f7">Weiss</option><option value="#69b58e">Grün</option><option value="#a78bfa">Lila</option><option value="#a9dce8">Hellblau</option><option value="transparent">Transparent / farblos</option></select>
+  <p class="note">Die Ausrichtung ist zunächst in 45°-Schritten möglich. Später können wir die exakten Regeln und Raster-Snap-Punkte verfeinern.</p>
+ </div>
+ <div class="section">
+  <h2>3 · Figuren auf dem Feld</h2><div id="pieceList"><span class="note">Noch keine Figuren.</span></div>
+ </div>
+ <div class="section">
+  <h2>4 · Rätsel speichern</h2>
+  <label for="puzzleName">Name des Rätsels</label><input id="puzzleName" value="Rätsel 1" maxlength="50">
+  <div class="actions" style="margin-top:9px"><button class="primary" id="export">Rätsel exportieren</button><button id="clear">Feld leeren</button></div>
+  <label for="jsonOut">Rätseldaten (JSON)</label><textarea id="jsonOut" rows="4" placeholder="Nach dem Export erscheinen hier deine Rätseldaten."></textarea>
+  <p class="note">Der Export ist ein erster Entwurf deiner Rätseldaten. Die Lichtsimulation und der eigentliche Spieler-Modus kommen als nächste Ausbaustufe.</p>
+ </div>
+</aside>
+</main>
+<script>
+const NS='http://www.w3.org/2000/svg', board=document.getElementById('board');
+const W=10,H=8, rows='ABCDEFGH'; let pieces=[], selected=null, activeShape='triangle', dragging=null;
+const templates={
+ triangle:[[-1,-.8],[1,-.8],[0,1]],
+ square:[[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]],
+ diamond:[[0,-1],[1,0],[0,1],[-1,0]],
+ hexagon:[[0,-1],[.85,-.5],[.85,.5],[0,1],[-.85,.5],[-.85,-.5]],
+ bar:[[-1,-.45],[1,-.45],[.65,.45],[-1.35,.45]],
+ bigtri:[[-1.5,-1],[1.5,-1],[0,1.5]],
+ transparent:[[-.8,-.8],[.8,-.8],[.8,.8],[-.8,.8]],
+ custom:[[-1,-.7],[0,-.7],[0,0],[1,0],[1,.7],[-.5,.7],[-.5,0],[-1,0]]
+};
+const names={triangle:'Dreieck',square:'Quadrat',diamond:'Raute',hexagon:'Sechseck',bar:'Parallelogramm',bigtri:'Grosses Dreieck',transparent:'Transparenter Umlenker',custom:'Zickzack'};
+function el(tag,attrs={}){let n=document.createElementNS(NS,tag);for(let k in attrs)n.setAttribute(k,attrs[k]);return n}
+function colorName(c){return ({'#e66b5b':'Rot','#5d91d5':'Blau','#e8c65c':'Gelb','#f1f3f7':'Weiss','#69b58e':'Grün','#a78bfa':'Lila','#a9dce8':'Hellblau','transparent':'Transparent'})[c]||c}
+function points(p){let a=templates[p.shape].map(([x,y])=>{let ang=p.angle*Math.PI/180, xx=x*p.sx, yy=y*p.sy;return [p.x+xx*Math.cos(ang)-yy*Math.sin(ang),p.y+xx*Math.sin(ang)+yy*Math.cos(ang)]});return a.map(v=>v.join(',')).join(' ')}
+function render(){
+ board.innerHTML='';
+ // coordinate labels
+ for(let c=0;c<=W;c++){let t=el('text',{x:c,y:-.28,class:'coord'});t.textContent=c===0?'':c;t.setAttribute('font-size','.2');board.append(t)}
+ for(let r=0;r<=H;r++){let t=el('text',{x:-.3,y:r,class:'coord'});t.textContent=r===H?'':rows[r];board.append(t)}
+ for(let c=0;c<=W;c++)board.append(el('line',{x1:c,y1:0,x2:c,y2:H,class:'gridline'}));
+ for(let r=0;r<=H;r++)board.append(el('line',{x1:0,y1:r,x2:W,y2:r,class:'gridline'}));
+ board.append(el('rect',{x:0,y:0,width:W,height:H,fill:'none',stroke:'#52627d','stroke-width':'.035'}));
+ pieces.forEach(p=>{let g=el('g');let poly=el('polygon',{points:points(p),fill:p.color==='transparent'?'#a9dce8':p.color,'fill-opacity':p.color==='transparent'?'.13':'.82',class:'piece'+(p.id===selected?' selected':'')});if(p.color==='transparent'){poly.setAttribute('stroke','#b9eaf4');poly.setAttribute('stroke-dasharray','.12 .07')}g.append(poly);let title=el('title');title.textContent=names[p.shape]+' · '+colorName(p.color);g.append(title);g.addEventListener('pointerdown',e=>{e.preventDefault();selected=p.id;dragging=p.id;board.setPointerCapture(e.pointerId);board.querySelectorAll('.piece').forEach(x=>x.classList.remove('selected'));poly.classList.add('selected');list()});g.addEventListener('pointerup',()=>dragging=null);board.append(g)});
+}
+function addPiece(){let p={id:Date.now()+Math.random(),shape:activeShape,color:activeShape==='transparent'?'transparent':document.getElementById('color').value,x:5,y:4,angle:0,sx:1,sy:1};pieces.push(p);selected=p.id;render();list();status('Figur hinzugefügt. Ziehe sie an die gewünschte Position.')}
+function status(s){document.getElementById('status').textContent=s}
+function list(){let box=document.getElementById('pieceList');box.innerHTML='';if(!pieces.length){box.innerHTML='<span class="note">Noch keine Figuren.</span>';return}pieces.forEach((p,i)=>{let b=document.createElement('div');b.className='piece-row'+(p.id===selected?' active':'');b.innerHTML=`<span>${i+1}. ${names[p.shape]} · ${colorName(p.color)}</span><span>(${p.x.toFixed(1)}, ${p.y.toFixed(1)})</span>`;b.onclick=()=>{selected=p.id;render();list()};box.append(b)})}
+function change(fn){let p=pieces.find(x=>x.id===selected);if(!p){status('Bitte zuerst eine Figur auswählen.');return}fn(p);render();list()}
+document.querySelectorAll('.shape').forEach(b=>b.onclick=()=>{document.querySelectorAll('.shape').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeShape=b.dataset.shape});
+document.getElementById('add').onclick=addPiece;
+document.getElementById('rot45').onclick=()=>change(p=>p.angle=(p.angle+45)%360);
+document.getElementById('rot90').onclick=()=>change(p=>p.angle=(p.angle+90)%360);
+document.getElementById('flip').onclick=()=>change(p=>p.sx*=-1);
+document.getElementById('remove').onclick=()=>{pieces=pieces.filter(p=>p.id!==selected);selected=null;render();list();status('Figur entfernt.')};
+document.getElementById('pieceColor').onchange=e=>change(p=>p.color=e.target.value);
+document.getElementById('clear').onclick=()=>{if(confirm('Alle Figuren vom Feld entfernen?')){pieces=[];selected=null;render();list();status('Spielfeld geleert.')}};
+document.getElementById('export').onclick=()=>{let data={name:document.getElementById('puzzleName').value,grid:{columns:W,rows:H,rowLabels:rows.split('')},pieces:pieces.map(p=>({shape:p.shape,color:p.color,x:+p.x.toFixed(2),y:+p.y.toFixed(2),angle:p.angle,scale:[p.sx,p.sy]}))};document.getElementById('jsonOut').value=JSON.stringify(data,null,2);status('Rätseldaten erstellt. Kopiere sie oder speichere sie als Datei.')};
+function pos(e){let pt=board.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;let q=pt.matrixTransform(board.getScreenCTM().inverse());return q}
+board.addEventListener('pointermove',e=>{if(!dragging)return;let p=pieces.find(x=>x.id===dragging);if(!p)return;let q=pos(e);p.x=Math.max(.2,Math.min(9.8,Math.round(q.x*2)/2));p.y=Math.max(.2,Math.min(7.8,Math.round(q.y*2)/2));render();list()});
+board.addEventListener('pointerup',()=>{dragging=null});
+render();list();
+</script>
+</body></html>
