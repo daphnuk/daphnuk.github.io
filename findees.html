@@ -72,10 +72,11 @@ lösen.</p>
 <div id="cl"></div>
 <details>
 <summary>Regeln</summary>
-<p>Der Strahl startet an einer Nummer am Rand und fliegt geradeaus. Trifft er die schräge Seite eines Steins, wird er im rechten Winkel abgelenkt. An einer geraden Seite kehrt er um. Jede getroffene Farbe mischt sich in den Strahl (pro Farbe nur einmal). Wer beim Antippen eines Strahl-Hinweises auf dem Brett die gestrichelte Linie sieht, erkennt, wo die eigene Belegung abweicht.</p>
-<p>Die Zahlen außen geben an, wie viele Felder in der Zeile oder Spalte belegt sind. „Berührt“ heißt: Zwei Steine teilen mindestens einen Eckpunkt. Steine dürfen sich nicht an Kanten berühren.</p>
-<p>Mischungen: Rot+Gelb Orange, Rot+Blau Lila, Gelb+Blau Grün, alle drei Schwarz. Mit Weiß werden die Farben heller (Rosa, Zitrone, Himmelblau), alle vier ergeben Grau. Der klare Stein (kleines Dreieck, nur im Level Schwer) lenkt den Strahl ab, färbt ihn aber nicht: Trifft ein Strahl Blau und Klar, bleibt er blau. Nur dort gibt es auch Strahlen ohne Farbe als Hinweis, sonst steht eine 0 am Rand.</p>
-<p>Es zählt jede Belegung, die alle Hinweise erfüllt. Die Hinweise werden so lange ergänzt, bis sich kein einzelner Stein mehr anders legen lässt. Bewiesen ist die Eindeutigkeit damit nicht, deshalb zählt jede gültige Belegung.</p>
+<p>Ein Strahl startet an einer Nummer am Rand und fliegt geradeaus. Trifft er die schräge Seite eines Steins, wird er im rechten Winkel abgelenkt. An einer geraden Seite kehrt er um. Jede getroffene Farbe mischt sich in den Strahl (pro Farbe nur einmal), z.B. Gelb und Blau ist Grün. Die zweite Zahl zeigt, wo der Strahl enden muss. Wenn du auf den Hinweis tippts, kannst du den Strahl sehen.</p>
+<p>Die Zahlen ausserhalb geben an, wie viele Felder in der Zeile oder Spalte belegt sind (auch ein halb ausgefülltes Feld zählt als 1 Feld). Steine dürfen sich nur an den Ecken berühren.</p>
+<p>Mögliche Mischungen: Rot+Gelb = Orange, Rot+Blau = Lila, Gelb+Blau = Grün, Rot+Gelb+Blau ist Schwarz. Mit Weiss werden die Farben heller z.B. Blau+Weiss = Hellblau), Rot+Gelb+Blau+Weiss ergeben Grau. Rot+Gelb+ Weiss = Hellorange, Rot+Blau+Weiss = Helllila, Gelb+Blau+Weiss = Hellgrün.
+  Der klare Stein (kleines Dreieck, nur im Level Schwer) lenkt den Strahl ab, färbt ihn aber nicht: Trifft ein Strahl Blau und Klar, bleibt er blau, trifft der Strahl nur den klaren Stein, so bleibt der Strahl klar.</p>
+<p>Es kann vorkommen, dass mehrere Varianten möglich sind, dann zählt jede Variante als korrekt, die alle Hinweise erfüllt. Die Hinweise werden so lange ergänzt, bis sich kein einzelner Stein mehr anders legen lässt.</p>
 </details>
 </div>
 </div>
@@ -85,7 +86,7 @@ lösen.</p>
 const W=8,H=10,C=40,OX=46,OY=46,VW=OX+W*C+24,VH=OY+H*C+24;
 const COL={R:'#e5484d',Y:'#f2c230',B:'#3b82f6',W:'#f4f4f2',T:'#7fdcec'};
 const BH={R:'#e5484d',Y:'#f2c230',B:'#3b82f6',W:'#ffffff',RY:'#f08a24',RB:'#8e44ad',YB:'#2fa84f',RYB:'#222222',RW:'#f7a8b8',YW:'#f7ec9a',BW:'#8fd0f5',RYW:'#f8c79a',RBW:'#c9a6e8',YBW:'#a5e3a0',RYBW:'#9a9a9a'};
-const NM={'':'Klar',R:'Rot',Y:'Gelb',B:'Blau',W:'Weiß',RY:'Orange',RB:'Lila',YB:'Grün',RYB:'Schwarz',RW:'Rosa',YW:'Zitrone',BW:'Himmelblau',RYW:'Pfirsich',RBW:'Flieder',YBW:'Hellgrün',RYBW:'Grau'};
+const NM={'':'Klar',R:'Rot',Y:'Gelb',B:'Blau',W:'Weiß',RY:'Orange',RB:'Lila',YB:'Grün',RYB:'Schwarz',RW:'Hellrot',YW:'Hellgelb',BW:'Hellblau',RYW:'Hellorange',RBW:'Helllila',YBW:'Hellgrün',RYBW:'Grau'};
 const SHAPES=[[[0,0,'tl']],[[0,0,'bl'],[0,1,'F'],[1,1,'bl']],[[0,0,'bl'],[1,0,'F'],[2,0,'tr']],[[0,0,'bl'],[1,0,'F'],[2,0,'br']],[[0,0,'br'],[1,0,'bl']],[[0,0,'br'],[1,0,'bl'],[0,1,'tr'],[1,1,'tl']],[[0,0,'F']]];
 const CFG={leicht:{p:'RYBWW',b:6,n:5,t:2,f:1},mittel:{p:'RYBWW',b:5,n:3,t:2,f:0},schwer:{p:'RYBWWT',b:4,n:2,t:1,f:1}};
 const OPP={tl:'br',br:'tl',tr:'bl',bl:'tr'},ROT={tl:'tr',tr:'br',br:'bl',bl:'tl'},FLP={tl:'tr',tr:'tl',bl:'br',br:'bl',F:'F'};
