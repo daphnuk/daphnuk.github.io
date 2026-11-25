@@ -141,7 +141,11 @@ function trace(g,id){
     const c=g[y][x];
     if(c){
       cs.add(c.color);hits.add(c.pid);
-      if(c.t==='F'||SOLID[c.t].some(([a,b])=>a===-dx&&b===-dy)){dx=-dx;dy=-dy}
+      if(c.t==='F'||SOLID[c.t].some(([a,b])=>a===-dx&&b===-dy)){
+        // 90°-Rückprall: an der Eintrittskante umkehren
+        dx=-dx;
+        dy=-dy;
+      }
       else if(c.t==='tl'||c.t==='br'){[dx,dy]=[-dy,-dx]}
       else{[dx,dy]=[dy,dx]}
     }
