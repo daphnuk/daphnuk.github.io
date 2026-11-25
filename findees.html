@@ -89,7 +89,7 @@ const W=8,H=10,C=40,OX=46,OY=46,VW=OX+W*C+24,VH=OY+H*C+24;
 const COL={R:'#e5484d',Y:'#f2c230',B:'#3b82f6',W:'#f4f4f2',T:'#7fdcec'};
 const BH={R:'#e5484d',Y:'#f2c230',B:'#3b82f6',W:'#ffffff',RY:'#f08a24',RB:'#8e44ad',YB:'#2fa84f',RYB:'#222222',RW:'#f7a8b8',YW:'#f7ec9a',BW:'#8fd0f5',RYW:'#f8c79a',RBW:'#c9a6e8',YBW:'#a5e3a0',RYBW:'#9a9a9a'};
 const NM={'':'Klar',R:'Rot',Y:'Gelb',B:'Blau',W:'Weiß',RY:'Orange',RB:'Lila',YB:'Grün',RYB:'Schwarz',RW:'Hellrot',YW:'Hellgelb',BW:'Hellblau',RYW:'Hellorange',RBW:'Helllila',YBW:'Hellgrün',RYBW:'Grau'};
-const SHAPES=[[[0,0,'tl']],[[0,0,'bl'],[0,1,'F'],[1,1,'bl']],[[0,0,'bl'],[1,0,'F'],[2,0,'tr']],[[0,0,'bl'],[1,0,'F'],[2,0,'br']],[[0,0,'br'],[1,0,'bl']],[[0,0,'br'],[1,0,'bl'],[0,1,'tr'],[1,1,'tl']],[[0,0,'F']]];
+const SHAPES=[[[0,0,'tl']],[[0,0,'bl'],[0,1,'F'],[1,1,'bl']],[[1,0,'bl'],[0,1,'tr'],[1,1,'F'],[2,1,'tl'],[0,2,'br'],[1,2,'F']],[[0,0,'bl'],[1,0,'F'],[2,0,'br']],[[0,0,'br'],[1,0,'bl']],[[0,0,'br'],[1,0,'bl'],[0,1,'tr'],[1,1,'tl']],[[0,0,'F']]];
 const CFG={leicht:{p:'RYBWW',b:6,n:5,t:2,f:1},mittel:{p:'RYBWW',b:5,n:3,t:2,f:0},schwer:{p:'RYBWWT',b:4,n:2,t:1,f:1}};
 const OPP={tl:'br',br:'tl',tr:'bl',bl:'tr'},ROT={tl:'tr',tr:'br',br:'bl',bl:'tl'},FLP={tl:'tr',tr:'tl',bl:'br',br:'bl',F:'F'};
 const CORN={tl:[0,0],tr:[1,0],br:[1,1],bl:[0,1]};
