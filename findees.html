@@ -48,6 +48,18 @@ details p{margin:6px 0}
 lösen. Unten findest du die Hinweise und Regeln, viel Spass!.</p>
 <div class="main">
 <div id="bd"></div>
+
+ <div class="card">
+<div class="row">
+<button id="chk" class="pri">Prüfen</button>
+<button id="sol">Lösung zeigen</button>
+<select id="dif" aria-label="Schwierigkeit"><option value="leicht">Leicht</option><option value="mittel" selected>Mittel</option><option value="schwer">Schwer</option></select>
+<button id="new">Neues Rätsel</button>
+</div>
+<div id="msg" aria-live="polite"></div>
+<div id="tag" style="color:var(--mut);font-size:14px"></div>
+ </div>
+ 
 <div class="side">
 <div class="card">
 <h2>Steine</h2>
@@ -57,16 +69,7 @@ lösen. Unten findest du die Hinweise und Regeln, viel Spass!.</p>
 <button id="flp">Spiegeln (F)</button>
 </div>
 </div>
-<div class="card">
-<div class="row">
-<button id="chk" class="pri">Prüfen</button>
-<button id="sol">Lösung zeigen</button>
-<select id="dif" aria-label="Schwierigkeit"><option value="leicht">Leicht</option><option value="mittel" selected>Mittel</option><option value="schwer">Schwer</option></select>
-<button id="new">Neues Rätsel</button>
-</div>
-<div id="msg" aria-live="polite"></div>
-<div id="tag" style="color:var(--mut);font-size:14px"></div>
-</div>
+
 <div class="card">
 <h2>Hinweise</h2>
 <div id="cl"></div>
