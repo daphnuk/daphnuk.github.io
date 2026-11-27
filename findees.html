@@ -39,24 +39,27 @@ li b{margin-left:auto}
 #msg{min-height:22px}
 details{color:var(--mut);font-size:14px}
 details p{margin:6px 0}
- @media (max-width: 600px) {
+@media (max-width: 600px) {
   .main {
+    display: flex;
     flex-direction: column;
+    align-items: center;
   }
 
-  .main > #bd {
+  #bd {
     width: 100%;
-    max-width: 100%;
+    max-width: 420px;
     min-width: 0;
-    flex: 1 1 100%;
+    flex: none;
   }
 
   .main > .card {
     width: 100%;
+    max-width: 420px;
     min-width: 0;
-    flex: 1 1 100%;
+    flex: none;
   }
- }
+}
 </style>
 </head>
 <body>
