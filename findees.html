@@ -39,6 +39,24 @@ li b{margin-left:auto}
 #msg{min-height:22px}
 details{color:var(--mut);font-size:14px}
 details p{margin:6px 0}
+ @media (max-width: 600px) {
+  .main {
+    flex-direction: column;
+  }
+
+  .main > #bd {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
+  }
+
+  .main > .card {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
+  }
+ }
 </style>
 </head>
 <body>
