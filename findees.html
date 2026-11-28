@@ -71,7 +71,6 @@ lösen. Unten findest du die Hinweise und Regeln, viel Spass!.</p>
  
  <div class="card">
 <div class="row">
-<button id="chk" class="pri">Prüfen</button>
 <button id="sol">Lösung zeigen</button>
 <select id="dif" aria-label="Schwierigkeit"><option value="leicht">Leicht</option><option value="mittel" selected>Mittel</option><option value="schwer">Schwer</option></select>
 <button id="new">Neues Rätsel</button>
@@ -367,7 +366,7 @@ function ghost(){
 }
 const dot=c=>`<i class="dot" style="background:${COL[c]}"></i>`;
 function render(){
-  const g=buildGrid(S.ps),R=evalClues(S.ps,S.clues),won=!!R&&R.every(Boolean),show=S.checked||won;
+  const g=buildGrid(S.ps),R=evalClues(S.ps,S.clues),won=!!R&&R.every(Boolean),show=!!R;
   $('#bd').innerHTML=boardSvg(g,R,show);
   ghost();
   $('#tray').innerHTML=S.ps.map(p=>{
@@ -382,8 +381,7 @@ function render(){
   });
   $('#cl').innerHTML=`<ul>${beams}</ul>${cont?`<ul>${cont}</ul>`:''}<div style="color:var(--mut);font-size:14px">Hier findest du die</div>`;
   $('#tag').textContent=S.daily?'Tagesrätsel '+new Date().toISOString().slice(0,10)+' · für alle gleich':'';
-  $('#msg').innerHTML=won?'<span class="win">Gelöst! Alle Hinweise stimmen.</span>':S.checked&&!R?'Platziere zuerst alle Steine.':S.checked?'Noch nicht alle Hinweise sind erfüllt (✗).':S.msg;
-}
+  $('#msg').innerHTML=won?'<span class="win">Gelöst! Alle Hinweise stimmen.</span>':R?'Noch nicht alle Hinweise sind erfüllt (✗).':S.msg;}
 function cellAt(e){
   const svg=$('#bd').firstElementChild;if(!svg)return null;
   const r=svg.getBoundingClientRect(),k=VW/r.width;
@@ -450,7 +448,6 @@ const rot=()=>{if(S.sel!=null){S.ps[S.sel].rot=(S.ps[S.sel].rot+1)%4;render()}};
 const flp=()=>{if(S.sel!=null){S.ps[S.sel].flip=!S.ps[S.sel].flip;render()}};
 $('#rot').onclick=rot;$('#flp').onclick=flp;
 document.addEventListener('keydown',e=>{if(e.target.tagName==='SELECT')return;if(e.key==='r'||e.key==='R')rot();if(e.key==='f'||e.key==='F')flp()});
-$('#chk').onclick=()=>{S.checked=true;render()};
 $('#sol').onclick=()=>{S.ps.forEach((p,i)=>{p.rot=S.sol[i].rot;p.flip=S.sol[i].flip;p.pos={...S.sol[i].pos}});S.sel=null;S.msg='';render()};
 $('#new').onclick=()=>neu(false);$('#daily').onclick=()=>neu(true);
 $('#dif').onchange=()=>neu(S.daily);
