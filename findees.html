@@ -339,10 +339,10 @@ function boardSvg(g,R,show){
     const [x,y]=lp(id),e=ends[id];let tc='var(--mut)';
     if(e){
       const f=BH[e.c],sel=S.hl===e.i;
-      s+=`<circle cx="${x}" cy="${y}" r="10" fill="${f||'none'}" stroke="${sel?'var(--acc)':'var(--fg)'}" stroke-opacity="${sel?1:.5}" stroke-width="${sel?3:1.5}" ${f?'':'stroke-dasharray="3 2"'}/>`;
+      s+=`<circle cx="${x}" cy="${y}" r="10" fill="${f||'none'}" stroke="${sel?'var(--acc)':'var(--fg)'}" stroke-opacity="${sel?1:.5}" stroke-width="${sel?3:1.5}" ${f?'':'stroke-dasharray="3 2"'} ${e?`data-ray="${e.i}" style="cursor:pointer"`:''}/>`; 
       if(f)tc=lum(f)>150?'#111':'#fff';else tc='var(--fg)';
     }
-    s+=`<text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" fill="${tc}">${id}</text>`;
+    s+=`<text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" fill="${tc}" ${e?`data-ray="${e.i}" style="cursor:pointer"`:''}>${id}</text>`;
   }
   S.clues.forEach((c,i)=>{
     if(c.k!=='n')return;
@@ -391,6 +391,13 @@ function cellAt(e){
   return x>=0&&y>=0&&x<W&&y<H?{x,y}:null;
 }
 const bd=$('#bd');
+bd.addEventListener('click',e=>{
+  const point=e.target.closest('[data-ray]');
+  if(!point)return;
+  const i=Number(point.dataset.ray);
+  S.hl=S.hl===i?null:i;
+  render();
+});
 bd.addEventListener('pointermove',e=>{
   const c=cellAt(e),k=c?c.x+','+c.y:'';
   bd.style.cursor=S.drag?'grabbing':(c&&buildGrid(S.ps)[c.y][c.x]?'grab':'');
