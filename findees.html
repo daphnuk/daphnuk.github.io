@@ -152,9 +152,67 @@ function buildGrid(ps){
 function fits(p,x,y,ps){
   const cs=cellsOf(p),[bw,bh]=dims(cs);
   if(x<0||y<0||x+bw>W||y+bh>H)return false;
-  const occ=new Set();
-  for(const q of ps)if(q!==p&&q.pos)for(const c of cellsOf(q))occ.add((q.pos.x+c.x)+','+(q.pos.y+c.y));
-  return cs.every(c=>![[0,0],[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>occ.has((x+c.x+a)+','+(y+c.y+b))));
+
+  function polygon(c,px,py){
+    return corners(c.t).map(k=>[
+      px+c.x+CORN[k][0],
+      py+c.y+CORN[k][1]
+    ]);
+  }
+
+  function overlapArea(a,b){
+    const axes=[];
+    for(const poly of [a,b]){
+      for(let i=0;i<poly.length;i++){
+        const p1=poly[i],p2=poly[(i+1)%poly.length];
+        const dx=p2[0]-p1[0],dy=p2[1]-p1[1];
+        axes.push([-dy,dx]);
+      }
+    }
+    for(const [ax,ay] of axes){
+      const A=a.map(v=>v[0]*ax+v[1]*ay);
+      const B=b.map(v=>v[0]*ax+v[1]*ay);
+      const overlap=Math.min(Math.max(...A),Math.max(...B))
+                     -Math.max(Math.min(...A),Math.min(...B));
+      if(overlap<=1e-8)return false;
+    }
+    return true;
+  }
+
+  function edgeTouch(a,b){
+    for(let i=0;i<a.length;i++){
+      const p=a[i],q=a[(i+1)%a.length];
+      for(let j=0;j<b.length;j++){
+        const r=b[j],s=b[(j+1)%b.length];
+        const cross=(q[0]-p[0])*(r[1]-p[1])
+                   -(q[1]-p[1])*(r[0]-p[0]);
+        if(Math.abs(cross)>1e-8)continue;
+
+        const dx=q[0]-p[0],dy=q[1]-p[1];
+        const len=Math.abs(dx)>Math.abs(dy)?dx:dy;
+        const A=Math.abs(dx)>Math.abs(dy)
+          ?[p[0],q[0]]:[p[1],q[1]];
+        const B=Math.abs(dx)>Math.abs(dy)
+          ?[r[0],s[0]]:[r[1],s[1]];
+        const overlap=Math.min(Math.max(...A),Math.max(...B))
+                       -Math.max(Math.min(...A),Math.min(...B));
+        if(overlap>1e-8)return true;
+      }
+    }
+    return false;
+  }
+
+  for(const q of ps){
+    if(q===p||!q.pos)continue;
+    for(const a of cs){
+      const A=polygon(a,x,y);
+      for(const b of cellsOf(q)){
+        const B=polygon(b,q.pos.x,q.pos.y);
+        if(overlapArea(A,B)||edgeTouch(A,B))return false;
+      }
+    }
+  }
+  return true;
 }
 function trace(g,id){
   let [x,y,dx,dy]=ENT[id];
